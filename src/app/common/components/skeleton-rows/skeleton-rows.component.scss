@@ -1,0 +1,45 @@
+@use '../../../common/styles/shared' as shared;
+
+.skeleton-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: var(--color-surface-2);
+    border-radius: var(--radius-sm);
+    height: 52px;
+  }
+
+  &__cell {
+    @extend %sk-shimmer;
+    display: block;
+    height: 16px;
+    border-radius: var(--radius-sm);
+
+    &--sprite {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    &--name {
+      width: 120px;
+    }
+
+    &--type {
+      width: 64px;
+      height: 22px;
+      border-radius: 100px;
+    }
+
+    &--stat {
+      width: 40px;
+    }
+  }
+}

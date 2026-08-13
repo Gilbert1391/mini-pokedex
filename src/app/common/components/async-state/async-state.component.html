@@ -1,0 +1,19 @@
+<div class="async-state">
+  @if (state().status === 'loading') {
+    <app-skeleton-rows [count]="skeletonRows()" />
+  } @else if (state().status === 'error') {
+    <div class="async-state__error" role="alert">
+      <p class="async-state__error-msg">{{ errorMessage() }}</p>
+      <button type="button" class="async-state__retry-btn" (click)="retry.emit()">Retry</button>
+    </div>
+  } @else if (state().status === 'empty') {
+    <div class="async-state__empty">
+      <p class="async-state__empty-msg">{{ emptyMessage() }}</p>
+    </div>
+  }
+
+  <!-- ng-content is always in DOM; hidden via CSS until status === 'success' -->
+  <div [style.display]="state().status === 'success' ? 'contents' : 'none'">
+    <ng-content />
+  </div>
+</div>
