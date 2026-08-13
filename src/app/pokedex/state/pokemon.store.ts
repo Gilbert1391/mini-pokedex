@@ -4,6 +4,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PokemonApiService } from '../services/pokemon-api.service';
 import type { PokemonDetail, PokemonListItem } from '../models/pokemon.model';
 
+// Generation 1 batch Pokémon — enough for client-side filtering; raise to 251/493/898 for more gens
+const DEFAULT_LOAD_LIMIT = 151;
+
 export interface PokemonStoreState {
   /** All fetched Pokémon indexed by id — grows as we load batches. */
   byId: Map<number, PokemonListItem>;
@@ -52,7 +55,7 @@ export class PokemonStore {
    * Loads a batch of Pokémon and merges them into the cache.
    * If the cache already has data and `force` is false, this is a no-op.
    */
-  loadPokemonList(limit = 151, offset = 0, force = false): void {
+  loadPokemonList(limit = DEFAULT_LOAD_LIMIT, offset = 0, force = false): void {
     const state = this.snapshot;
     if (state.loading) return;
     if (state.allIds.length > 0 && !force) return;
