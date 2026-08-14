@@ -1,0 +1,104 @@
+<aside class="detail-panel" [class.detail-panel--open]="isOpen()" role="dialog" aria-modal="true">
+  <div class="detail-panel__header">
+    <button
+      type="button"
+      class="detail-panel__close"
+      aria-label="Close panel"
+      (click)="close.emit()"
+    >
+      ← Back
+    </button>
+  </div>
+
+  <div class="detail-panel__body">
+    <app-async-state [state]="state()" (retry)="retry.emit()">
+      @if (detail(); as d) {
+        <div class="detail-panel__content">
+          <!-- Sprite + name -->
+          <div class="detail-panel__hero">
+            @if (d.spriteUrl) {
+              <img
+                class="detail-panel__sprite"
+                [src]="d.spriteUrl"
+                [alt]="d.name"
+                width="120"
+                height="120"
+              />
+            }
+            <div>
+              <p class="detail-panel__id">#{{ d.id }}</p>
+              <h2 class="detail-panel__name">{{ d.name }}</h2>
+              <div class="detail-panel__types">
+                @for (type of d.types; track type) {
+                  <app-type-badge [type]="type" />
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Physical info -->
+          <div class="detail-panel__meta">
+            <span class="detail-panel__meta-item">Height: {{ d.height / 10 }}m</span>
+            <span class="detail-panel__meta-item">Weight: {{ d.weight / 10 }}kg</span>
+          </div>
+
+          <!-- Radar chart -->
+          <div class="detail-panel__chart-wrap">
+            <ngx-charts-polar-chart
+              [results]="chartData()"
+              [scheme]="colorScheme"
+              [curve]="curve"
+              [legend]="false"
+              [showGridLines]="true"
+              [xAxis]="true"
+              [yAxis]="false"
+              [roundDomains]="true"
+              [tooltipDisabled]="false"
+              [animations]="true"
+              [view]="[300, 260]"
+            />
+          </div>
+
+          <!-- Abilities -->
+          @if (d.abilities.length > 0) {
+            <section class="detail-panel__abilities">
+              <h3 class="detail-panel__section-title">Abilities</h3>
+              <ul class="detail-panel__ability-list">
+                @for (ability of d.abilities; track ability.name) {
+                  <li class="detail-panel__ability">
+                    <span class="detail-panel__ability-name">
+                      {{ ability.name }}
+                      @if (ability.isHidden) {
+                        <span class="detail-panel__ability-hidden">(hidden)</span>
+                      }
+                    </span>
+                    @if (ability.shortEffect) {
+                      <p class="detail-panel__ability-effect">{{ ability.shortEffect }}</p>
+                    }
+                  </li>
+                }
+              </ul>
+            </section>
+          }
+
+          <!-- Base stats list -->
+          <section class="detail-panel__stats">
+            <h3 class="detail-panel__section-title">Base Stats</h3>
+            @for (stat of d.stats; track stat.name) {
+              <div class="detail-panel__stat-row">
+                <span class="detail-panel__stat-name">{{ stat.name }}</span>
+                <span class="detail-panel__stat-value">{{ stat.baseStat }}</span>
+                <div class="detail-panel__stat-bar">
+                  <div
+                    class="detail-panel__stat-fill"
+                    [style.width.%]="(stat.baseStat / 255) * 100"
+                  ></div>
+                </div>
+              </div>
+            }
+          </section>
+        </div>
+      }
+    </app-async-state>
+  </div>
+</aside>

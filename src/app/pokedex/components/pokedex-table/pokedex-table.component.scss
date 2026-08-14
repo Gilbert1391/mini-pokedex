@@ -1,0 +1,150 @@
+@use '../../../../app/common/styles/shared' as shared;
+
+.pokedex-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  @include shared.custom-scrollbar();
+}
+
+.pokedex-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+
+  &__head {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--color-surface-2);
+  }
+
+  &__th {
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    border-bottom: 1px solid var(--color-border);
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.15s;
+
+    &:hover,
+    &--sorted {
+      color: var(--color-text);
+    }
+
+    &--sprite {
+      width: 52px;
+      cursor: default;
+    }
+
+    &--id {
+      width: 48px;
+    }
+
+    &--type {
+      cursor: default;
+    }
+
+    &--stat {
+      text-align: right;
+      width: 60px;
+    }
+
+    &--total {
+      color: var(--color-accent);
+
+      &.pokedex-table__th--sorted {
+        color: var(--color-accent);
+      }
+    }
+  }
+
+  &__sort-icon {
+    font-size: 10px;
+    opacity: 0.6;
+    margin-left: 2px;
+  }
+
+  &__body {
+    .pokedex-table__row {
+      border-bottom: 1px solid var(--color-border);
+      cursor: pointer;
+      transition: background 0.1s;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      &--selected {
+        background: rgba(0, 122, 204, 0.12) !important;
+      }
+
+      // Type highlight directive classes
+      &.type-highlight--strong {
+        background: rgba(40, 167, 69, 0.1);
+        border-left: 2px solid rgba(40, 167, 69, 0.6);
+      }
+
+      &.type-highlight--weak {
+        background: rgba(220, 53, 69, 0.1);
+        border-left: 2px solid rgba(220, 53, 69, 0.5);
+      }
+    }
+  }
+
+  &__td {
+    padding: 8px 12px;
+    vertical-align: middle;
+
+    &--sprite {
+      width: 52px;
+      padding: 4px 12px;
+    }
+
+    &--id {
+      color: var(--color-text-muted);
+      font-size: 12px;
+    }
+
+    &--name {
+      font-weight: 500;
+      text-transform: capitalize;
+    }
+
+    &--stat {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    &--total {
+      font-weight: 600;
+      color: var(--color-accent);
+    }
+  }
+
+  &__types {
+    display: flex;
+    gap: 4px;
+    flex-wrap: nowrap;
+  }
+
+  &__no-sprite {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--color-border);
+    font-size: 18px;
+    color: var(--color-text-muted);
+  }
+
+  img {
+    display: block;
+    image-rendering: pixelated;
+  }
+}

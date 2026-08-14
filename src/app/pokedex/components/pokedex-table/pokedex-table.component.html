@@ -1,0 +1,81 @@
+<div class="pokedex-table-wrapper">
+  <table class="pokedex-table" role="grid">
+    <thead class="pokedex-table__head">
+      <tr>
+        <th class="pokedex-table__th pokedex-table__th--sprite"></th>
+        <th
+          class="pokedex-table__th pokedex-table__th--id"
+          [class.pokedex-table__th--sorted]="isActive('id')"
+          (click)="onHeaderClick('id')"
+        >
+          # <span class="pokedex-table__sort-icon">{{ sortIcon('id') }}</span>
+        </th>
+        <th
+          class="pokedex-table__th pokedex-table__th--name"
+          [class.pokedex-table__th--sorted]="isActive('name')"
+          (click)="onHeaderClick('name')"
+        >
+          Name <span class="pokedex-table__sort-icon">{{ sortIcon('name') }}</span>
+        </th>
+        <th class="pokedex-table__th pokedex-table__th--type">Type</th>
+        @for (stat of statOrder; track stat) {
+          <th
+            class="pokedex-table__th pokedex-table__th--stat"
+            [class.pokedex-table__th--sorted]="isActive(stat)"
+            (click)="onHeaderClick(stat)"
+          >
+            {{ statLabels[stat] }}
+            <span class="pokedex-table__sort-icon">{{ sortIcon(stat) }}</span>
+          </th>
+        }
+        <th
+          class="pokedex-table__th pokedex-table__th--stat pokedex-table__th--total"
+          [class.pokedex-table__th--sorted]="isActive('totalStats')"
+          (click)="onHeaderClick('totalStats')"
+        >
+          Total <span class="pokedex-table__sort-icon">{{ sortIcon('totalStats') }}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody class="pokedex-table__body">
+      @for (p of pokemon(); track p.id) {
+        <tr
+          class="pokedex-table__row"
+          [class.pokedex-table__row--selected]="selectedId() === p.id"
+          [appTypeHighlight]="p.types"
+          [highlightAgainst]="highlightType()"
+          (click)="rowClick.emit(p.id)"
+          role="button"
+          tabindex="0"
+          [attr.aria-label]="'View details for ' + p.name"
+          (keydown.enter)="rowClick.emit(p.id)"
+        >
+          <td class="pokedex-table__td pokedex-table__td--sprite">
+            @if (p.spriteUrl) {
+              <img [src]="p.spriteUrl" [alt]="p.name" width="40" height="40" loading="lazy" />
+            } @else {
+              <span class="pokedex-table__no-sprite">?</span>
+            }
+          </td>
+          <td class="pokedex-table__td pokedex-table__td--id">{{ p.id }}</td>
+          <td class="pokedex-table__td pokedex-table__td--name">{{ p.name }}</td>
+          <td class="pokedex-table__td pokedex-table__td--type">
+            <div class="pokedex-table__types">
+              @for (type of p.types; track type) {
+                <app-type-badge [type]="type" />
+              }
+            </div>
+          </td>
+          @for (stat of statOrder; track stat) {
+            <td class="pokedex-table__td pokedex-table__td--stat">
+              {{ getStat(p, stat) }}
+            </td>
+          }
+          <td class="pokedex-table__td pokedex-table__td--stat pokedex-table__td--total">
+            {{ p.totalStats }}
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

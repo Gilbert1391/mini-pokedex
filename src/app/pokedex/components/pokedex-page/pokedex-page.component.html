@@ -1,0 +1,93 @@
+<div class="pokedex-page">
+  <!-- Filter bar -->
+  <div class="pokedex-page__filters">
+    <input
+      class="pokedex-page__search"
+      type="search"
+      placeholder="Search Pokémon…"
+      [value]="uiStore.searchQuery()"
+      (input)="uiStore.setSearch($any($event.target).value)"
+      aria-label="Search Pokémon by name"
+    />
+    <select
+      class="pokedex-page__type-select"
+      [value]="uiStore.typeFilter()"
+      (change)="uiStore.setTypeFilter($any($event.target).value)"
+      aria-label="Filter by type"
+    >
+      <option value="">All types</option>
+      @for (type of typeOptions; track type) {
+        <option [value]="type">{{ type }}</option>
+      }
+    </select>
+    <select
+      class="pokedex-page__size-select"
+      [value]="uiStore.pageSize()"
+      (change)="uiStore.setPageSize(+$any($event.target).value)"
+      aria-label="Rows per page"
+    >
+      @for (size of pageSizeOptions; track size) {
+        <option [value]="size">{{ size }} / page</option>
+      }
+    </select>
+  </div>
+
+  <!-- Table area -->
+  <div class="pokedex-page__table-area">
+    <app-async-state
+      [state]="tableState()"
+      [skeletonRows]="uiStore.pageSize()"
+      [emptyMessage]="'No Pokémon found. Try a different search or type.'"
+      (retry)="retryLoad()"
+    >
+      <app-pokedex-table
+        [pokemon]="uiStore.pagedResult()?.items ?? []"
+        [sortField]="uiStore.sortField()"
+        [sortDirection]="uiStore.sortDirection()"
+        [selectedId]="uiStore.selectedPokemonId()"
+        [highlightType]="uiStore.typeFilter()"
+        (rowClick)="uiStore.selectPokemon($event)"
+        (sortChange)="onSortChange($event)"
+      />
+    </app-async-state>
+  </div>
+
+  <!-- Pagination -->
+  @if (uiStore.pagedResult(); as result) {
+    @if (result.totalPages > 1) {
+      <div class="pokedex-page__pagination" role="navigation" aria-label="Pagination">
+        <button
+          type="button"
+          class="pokedex-page__page-btn"
+          [disabled]="uiStore.currentPage() === 0"
+          (click)="onPageChange(-1)"
+          aria-label="Previous page"
+        >
+          ←
+        </button>
+        <span class="pokedex-page__page-info">
+          {{ uiStore.currentPage() + 1 }} / {{ result.totalPages }}
+          <span class="pokedex-page__page-total">({{ result.totalItems }} Pokémon)</span>
+        </span>
+        <button
+          type="button"
+          class="pokedex-page__page-btn"
+          [disabled]="uiStore.currentPage() + 1 >= result.totalPages"
+          (click)="onPageChange(1)"
+          aria-label="Next page"
+        >
+          →
+        </button>
+      </div>
+    }
+  }
+</div>
+
+<!-- Detail panel (outside main flow, fixed position) -->
+<app-pokemon-detail-panel
+  [isOpen]="uiStore.isPanelOpen()"
+  [state]="detailState()"
+  [detail]="uiStore.selectedDetail()"
+  (close)="uiStore.closePanel()"
+  (retry)="retryDetail()"
+/>
