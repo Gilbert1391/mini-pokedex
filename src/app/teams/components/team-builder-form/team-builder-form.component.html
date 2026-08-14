@@ -1,0 +1,119 @@
+<form class="team-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <h3 class="team-form__title">New Team</h3>
+
+  <!-- Team name -->
+  <div class="team-form__field">
+    <label class="team-form__label" for="team-name">Team Name</label>
+    <input
+      id="team-name"
+      class="team-form__input"
+      [class.team-form__input--error]="name.invalid && (name.dirty || name.touched)"
+      type="text"
+      formControlName="name"
+      [placeholder]="nameLimits.min + '–' + nameLimits.max + ' characters'"
+      autocomplete="off"
+    />
+    @if (name.pending) {
+      <p class="team-form__hint">Checking…</p>
+    }
+    @if (name.dirty || name.touched) {
+      @if (name.errors?.['required']) {
+        <p class="team-form__error">Name is required.</p>
+      } @else if (name.errors?.['minlength']) {
+        <p class="team-form__error">Minimum {{ nameLimits.min }} characters.</p>
+      } @else if (name.errors?.['maxlength']) {
+        <p class="team-form__error">Maximum {{ nameLimits.max }} characters.</p>
+      } @else if (name.errors?.['uniqueTeamName']) {
+        <p class="team-form__error">That name is already in use.</p>
+      }
+    }
+  </div>
+
+  <!-- Pokémon picker -->
+  <div class="team-form__field">
+    <label class="team-form__label">
+      Pokémon
+      <span class="team-form__label-count">{{ selectedPokemon().length }}/{{ maxSlots }}</span>
+    </label>
+
+    <!-- Selected chips -->
+    @if (selectedPokemon().length > 0) {
+      <div class="team-form__chips">
+        @for (p of selectedPokemon(); track p.id) {
+          <div class="team-form__chip">
+            @if (p.spriteUrl) {
+              <img [src]="p.spriteUrl" [alt]="p.name" width="28" height="28" loading="lazy" />
+            }
+            <span class="team-form__chip-name">{{ p.name }}</span>
+            <button
+              type="button"
+              class="team-form__chip-remove"
+              [attr.aria-label]="'Remove ' + p.name"
+              (click)="removePokemon(p.id)"
+            >
+              ×
+            </button>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Autocomplete input (hidden when team is full) -->
+    @if (selectedPokemon().length < maxSlots) {
+      <div class="team-form__autocomplete">
+        <input
+          class="team-form__input"
+          type="search"
+          placeholder="Search Pokémon…"
+          [value]="rawAutocompleteInput()"
+          (input)="onAutocompleteInput($any($event.target).value)"
+          autocomplete="off"
+          aria-label="Search Pokémon to add"
+        />
+        @if (isDropdownOpen() && dropdownItems().length > 0) {
+          <ul class="team-form__dropdown" role="listbox">
+            @for (p of dropdownItems(); track p.id) {
+              <li class="team-form__dropdown-item" role="option" (mousedown)="selectPokemon(p)">
+                @if (p.spriteUrl) {
+                  <img [src]="p.spriteUrl" [alt]="p.name" width="32" height="32" loading="lazy" />
+                }
+                <span>{{ p.name }}</span>
+                <span class="team-form__dropdown-id">#{{ p.id }}</span>
+              </li>
+            }
+          </ul>
+        }
+        @if (isDropdownOpen() && rawAutocompleteInput() && dropdownItems().length === 0) {
+          <div class="team-form__dropdown-empty">No Pokémon found</div>
+        }
+      </div>
+    }
+
+    <!-- Validation errors for pokemonIds -->
+    @if (pokemonIds.dirty) {
+      @if (pokemonIds.errors?.['minPokemon']) {
+        <p class="team-form__error">Add at least 1 Pokémon.</p>
+      } @else if (pokemonIds.errors?.['maxPokemon']) {
+        <p class="team-form__error">Maximum {{ maxSlots }} Pokémon per team.</p>
+      }
+    }
+  </div>
+
+  <!-- Actions -->
+  <div class="team-form__actions">
+    <button type="button" class="team-form__btn team-form__btn--cancel" (click)="cancel.emit()">
+      Cancel
+    </button>
+    <button
+      type="submit"
+      class="team-form__btn team-form__btn--submit"
+      [disabled]="form.invalid || form.pending"
+    >
+      @if (form.pending) {
+        Validating…
+      } @else {
+        Create Team
+      }
+    </button>
+  </div>
+</form>

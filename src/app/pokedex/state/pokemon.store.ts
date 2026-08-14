@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs/operators';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { PokemonApiService } from '../services/pokemon-api.service';
 import type { PokemonDetail, PokemonListItem } from '../models/pokemon.model';
 
@@ -43,6 +44,11 @@ export class PokemonStore {
   private readonly _state$ = new BehaviorSubject<PokemonStoreState>(INITIAL_STATE);
   /** Emit the full store state to all subscribers. */
   readonly state$ = this._state$.asObservable();
+
+  /** Reactive signal of the byId cache — use in computed() instead of snapshot. */
+  readonly pokemonById = toSignal(this._state$.pipe(map((s) => s.byId)), {
+    initialValue: new Map<number, PokemonListItem>(),
+  });
 
   /** Snapshot of current state — use in non-reactive contexts only. */
   get snapshot(): PokemonStoreState {

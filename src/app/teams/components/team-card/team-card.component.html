@@ -1,0 +1,52 @@
+<article
+  class="team-card"
+  [class.team-card--selected]="isSelected()"
+  role="button"
+  tabindex="0"
+  [attr.aria-label]="'Select team ' + team().name"
+  (click)="select.emit(team().id)"
+  (keydown.enter)="select.emit(team().id)"
+>
+  <div class="team-card__header">
+    <h3 class="team-card__name">{{ team().name }}</h3>
+    <button
+      type="button"
+      class="team-card__delete"
+      aria-label="Delete team"
+      (click)="onDelete($event)"
+    >
+      ✕
+    </button>
+  </div>
+
+  <div class="team-card__sprites">
+    @for (p of members(); track p.id) {
+      @if (p.spriteUrl) {
+        <img
+          class="team-card__sprite"
+          [src]="p.spriteUrl"
+          [alt]="p.name"
+          width="48"
+          height="48"
+          loading="lazy"
+        />
+      } @else {
+        <span class="team-card__sprite-placeholder">?</span>
+      }
+    }
+    @for (_ of [].constructor(6 - members().length); track $index) {
+      <span class="team-card__sprite-empty"></span>
+    }
+  </div>
+
+  <div class="team-card__footer">
+    <div class="team-card__types">
+      @for (entry of typeDistribution(); track entry.type) {
+        <app-type-badge [type]="entry.type" />
+      }
+    </div>
+    @if (totalBaseStats() > 0) {
+      <span class="team-card__stats">{{ totalBaseStats() }} BST</span>
+    }
+  </div>
+</article>

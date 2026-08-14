@@ -9,4 +9,11 @@ export const routes: Routes = [
         (m) => m.PokedexPageComponent,
       ),
   },
+  {
+    path: 'teams',
+    loadComponent: () =>
+      import('./teams/components/teams-page/teams-page.component').then(
+        (m) => m.TeamsPageComponent,
+      ),
+  },
 ];

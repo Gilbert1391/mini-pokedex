@@ -1,0 +1,111 @@
+.team-card {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  &--selected {
+    border-color: var(--color-primary);
+    background: rgba(0, 122, 204, 0.08);
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  &__name {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__delete {
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 13px;
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    transition:
+      color 0.15s,
+      background 0.15s;
+    flex-shrink: 0;
+
+    &:hover {
+      color: var(--color-danger);
+      background: rgba(220, 53, 69, 0.12);
+    }
+  }
+
+  &__sprites {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  &__sprite {
+    image-rendering: pixelated;
+    display: block;
+  }
+
+  &__sprite-placeholder,
+  &__sprite-empty {
+    display: block;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+  }
+
+  &__sprite-placeholder {
+    background: var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: var(--color-text-muted);
+  }
+
+  &__sprite-empty {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px dashed var(--color-border);
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  &__types {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  &__stats {
+    font-size: 12px;
+    color: var(--color-accent);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+}

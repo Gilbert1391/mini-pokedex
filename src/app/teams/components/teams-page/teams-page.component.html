@@ -1,0 +1,36 @@
+<div class="teams-page">
+  <div class="teams-page__header">
+    <h2 class="teams-page__title">My Teams</h2>
+    @if (!showForm()) {
+      <button type="button" class="teams-page__new-btn" (click)="showForm.set(true)">
+        + New Team
+      </button>
+    }
+  </div>
+
+  @if (showForm()) {
+    <div class="teams-page__form-wrap">
+      <app-team-builder-form (cancel)="showForm.set(false)" />
+    </div>
+  }
+
+  <div class="teams-page__list-area">
+    <app-async-state
+      [state]="teamsState()"
+      [skeletonRows]="3"
+      [emptyMessage]="'No teams yet. Create your first team!'"
+      (retry)="retryLoad()"
+    >
+      <div class="teams-page__grid">
+        @for (team of uiStore.teams(); track team.id) {
+          <app-team-card
+            [team]="team"
+            [isSelected]="uiStore.selectedTeamId() === team.id"
+            (select)="uiStore.selectTeam($event)"
+            (delete)="teamStore.deleteTeam($event)"
+          />
+        }
+      </div>
+    </app-async-state>
+  </div>
+</div>
