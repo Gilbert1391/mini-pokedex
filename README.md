@@ -87,6 +87,16 @@ Components
 - **No Apollo** — `GraphqlClientService` is a 20-line HttpClient wrapper. PokeAPI calls use `retry({ count: 2, delay: 800 })`.
 - **Bonus: type-highlight directive** — `[appTypeHighlight]` applies green/red left-border to table rows based on type effectiveness vs. the active type filter.
 
+## AI tooling — intentional, not "vibe coding"
+
+The task brief explicitly encourages the use of AI tools while cautioning against over-reliance (i.e. generating entire features blindly without understanding or review). To make that line of responsibility clear and traceable, this repository includes two AI configuration artefacts:
+
+**`.github/copilot-instructions.md`** — a project-level instruction file for GitHub Copilot. It codifies the architectural rules that the agent must follow at all times: BehaviorSubject-based RxJS stores (no NgRx), mandatory four-state async wrapper on every async view, `signal()`/`input()`/`output()` component API, `OnPush` + `inject()`, BEM SCSS with CSS custom properties, and the GraphQL client constraints. This ensures every AI suggestion is constrained to the project's actual conventions rather than generic Angular defaults.
+
+**`.github/skills/conventional-commits/`** — a reusable skill that enforces the developer guide format for every commit message, backed by the `commitlint` configuration already in the repo. This means the AI cannot generate or accept a free-form commit message — it must follow the same `type(scope): subject` rules that `husky` enforces at the pre-commit hook.
+
+In practice, AI assistance was used for: generating boilerplate that exactly matches the defined patterns (stores, services, component shells), writing test cases for known business logic, and suggesting refactors. Architecture decisions, state-management design, and code review of every generated block remained manual.
+
 ## What I'd improve with more time
 
 1. **More Pokémon generations** — raise `DEFAULT_LOAD_LIMIT` from 151 (Gen 1) to 898+ and add a "Load more" button; or switch to server-side pagination with the PokeAPI offset.
