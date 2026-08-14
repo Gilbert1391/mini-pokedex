@@ -1,2 +1,21 @@
-<router-outlet />
+<div class="shell">
+  <nav class="shell__nav">
+    <a class="shell__brand" routerLink="/pokedex" aria-label="Home">Mini Pokédex</a>
+    <div class="shell__links">
+      <a
+        class="shell__link"
+        routerLink="/pokedex"
+        routerLinkActive="shell__link--active"
+      >Pokédex</a>
+      <a
+        class="shell__link"
+        routerLink="/teams"
+        routerLinkActive="shell__link--active"
+      >Teams</a>
+    </div>
+  </nav>
+  <main class="shell__main">
+    <router-outlet />
+  </main>
+</div>
 <app-toast />
